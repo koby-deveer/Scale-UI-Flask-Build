@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haul Road Truck Scale - Home Screen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="flex flex-col items-center pb-20 bg-white">
+        <header class="flex gap-5 self-stretch px-5 py-3.5 w-full text-2xl font-medium leading-5 text-center bg-indigo-900 max-md:flex-wrap max-md:pl-5 max-md:max-w-full">
+            <nav class="flex gap-5 justify-between whitespace-nowrap text-zinc-100">
+              <div class="flex gap-3 px-2.5 py-3 bg-indigo-900 rounded-3xl">
+                <img src="{{ url_for('static', filename='images/home.svg') }}" alt="Home icon" class="shrink-0 w-8 aspect-square fill-stone-200" />
+                <div class="my-auto"><a href="{{url_for('home')}}">HOME</a></div>
+              </div>
+              <div class="flex gap-2 py-3 bg-indigo-900 rounded-3xl">
+                <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Audit icon" class="shrink-0 w-8 aspect-square" />
+                <select id="nav"class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-white text-opacity-100 bg-indigo-900 " onchange="navigateToPage()">
+                    <option value="">AUDIT</option>
+                    <option value="{{url_for('audit')}}">WEIGHOUT</option>
+                    <option value="{{url_for('audit_weighin')}}">WEIGHIN</option>
+                    <option value="{{url_for('trends')}}">TRENDS</option>
+                </select>
+              </div>
+            </nav>
+            <h1 class="flex-auto my-auto text-4xl leading-5 text-white">VALCO SCALE WEB APP</h1>
+            <div class="flex gap-5 justify-between text-neutral-100">
+              <img src="{{ url_for('static', filename='images/clipboard.svg') }}" alt="Company logo" class="shrink-0 w-8 aspect-square" />
+              <div class="flex-auto my-auto"><a href="{{url_for('log')}}">LOG</a></div>
+              <button class="justify-center self-center px-2 py-4 bg-black rounded-3xl"><a href="{{url_for('signout')}}">SIGN OUT</a></button>
+            </div>
+          </header>
+
+        <div class="flex flex-col items-center pb-20 bg-white">
+            <form class="flex flex-col gap-8 mt-14 w-full max-w-[1440px] px-5 max-md:flex-wrap max-md:mt-10 max-md:max-w-full" action="{{url_for('trends')}}" method="POST">
+                <div class="flex flex-wrap gap-10 w-full">
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="truckId" class="text-3xl leading-6 text-black">Truck ID</label>
+                        <input type="text" name="truckId" placeholder="Please input the Truck ID"
+                            class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50" />
+                    </div>
+                    <!-- Create drop down box -->
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="material" class="text-3xl leading-6 text-black">Select Material</label>
+                        <select name="material" class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50">
+                            <option value="">Select Material</option>
+                            <option value="Alumina">ALUMINA</option>
+                            <option value="PetCoke">PETCOKE</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="startDate" class="text-3xl leading-6 text-black">Start Date</label>
+                        <input type="date" name="startDate" placeholder="2021-09-03"
+                            class="px-3 py-2 text-2xl leading-5 text-center whitespace-nowrap rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis" />
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="endDate" class="text-3xl leading-6 text-black">End Date</label>
+                        <input type="date" name="endDate" placeholder="2021-06-04"
+                            class="px-3 py-2 text-2xl leading-5 text-center whitespace-nowrap rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis" />
+                    </div>
+                </div>
+                <div class="flex justify-center my-auto">
+                    <button type="submit" class="flex gap-2 justify-center px-3 py-2.5 bg-black rounded-lg max-md:px-5">
+                        <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search icon" class="shrink-0 w-8 aspect-square" />
+                        <span class="my-auto text-white">Search</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="flex justify-center w-full max-w-[1440px] px-5 mt-10">
+            <canvas id="Trend_charts" class="w-full max-w-4xl h-96" data-gmode="{{ Gmode }}"></canvas>
+        </div>
+
+        <script>
+            function navigateToPage() {
+            var select = document.getElementById('nav');
+            console.log(select)
+            var url = select.value;
+            if (url) {
+                window.location.href=url;
+            }
+        }
+        </script>
+        
+        {% if Gmode != 0 %}
+            <script>
+                // Ensure the chart is destroyed if it exists
+                let chartStatus = Chart.getChart("Trend_charts");
+                if (chartStatus) {
+                    chartStatus.destroy();
+                }
+                
+                // Retrieve Gmode from data attribute
+                const trendCanvas = document.getElementById('Trend_charts');
+                const Gmode = trendCanvas.getAttribute('data-gmode');
+
+                // Parse the JSON data
+                var graphD = JSON.parse('{{ gData | tojson | safe }}');
+                console.log(graphD); // Debugging log to check the data
+
+                var trend = trendCanvas.getContext('2d');
+                
+                if(Gmode==1){
+                    var chartConfig = {
+                    type: 'line',
+                    data: {
+                        labels: graphD.xAxis,
+                        datasets: []
+                    },
+                    options:{
+                        scales: {
+                                y: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                    ticks: {  
+                                                color: 'green' 
+                                            },
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                    ticks:{
+                                        color:'red'
+                                    },
+                                    // grid line settings
+                                    grid: {
+                                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                    },
+                                    }
+                                }
+                            }
+                };
+                }   
+
+                if (Gmode==2 || Gmode==3){
+                var chartConfig = {
+                    type: 'line',
+                    data: {
+                        labels: graphD.xAxis,
+                        datasets: []
+                    }
+                };
+                 }
+                 
+                if(Gmode==4 || Gmode==5){
+                    var chartConfig = {
+                    type:'bar',
+                    data: {
+                        labels: graphD.xAxis,
+                        datasets: []
+                    }
+                 };
+                }
+
+                if (Gmode === "1") {
+                    chartConfig.data.datasets.push({
+                        label: graphD.label1,
+                        data: graphD.trip,
+                        yAxisID:'y',
+                        borderColor: 'green',
+                        fill: false
+                    }, {
+                        label: graphD.label2,
+                        data: graphD.mat,
+                        yAxisID:'y1',
+                        borderColor: 'rgb(192, 75, 75)',
+                        fill: false
+                    });
+                } else if (Gmode === "2") {
+                    chartConfig.data.datasets.push({
+                        label: graphD.label1,
+                        data: graphD.trip,
+                        borderColor: 'rgb(75, 192, 192)',
+                        fill: false
+                    });
+                } else if (Gmode === "3") {
+                    chartConfig.data.datasets.push({
+                        label: graphD.label1,
+                        data: graphD.mat,
+                        borderColor: 'rgb(192, 75, 75)',
+                        fill: false
+                    });
+                } else if (Gmode === "4") {
+                    chartConfig.data.datasets.push({
+                        label: graphD.label1,
+                        data: graphD.trip,
+                        backgroundColor: 'rgb(75, 192, 192)'
+                    });
+                } else if ( Gmode === "5") {
+                    chartConfig.data.datasets.push({
+                        label: graphD.label1,
+                        data:  graphD.mat,
+                        backgroundColor: 'rgb(75, 192, 192)'
+                    });
+                }
+                
+
+                // Create the chart
+                var chart = new Chart(trend, chartConfig);
+            </script>
+        {% endif %}
+    </div>
+</body>
+</html>

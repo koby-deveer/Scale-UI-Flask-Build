@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haul Road Truck Scale - Home Screen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+    <style>
+      .connected{
+        background-color: green;
+      }
+
+      .disconnected{
+        background-color: red;
+      }
+    </style>
+</head>
+<body>
+  <div class="flex flex-col items-center pb-20 bg-white">
+  <header class="flex gap-5 self-stretch px-5 py-3.5 w-full text-2xl font-medium leading-5 text-center bg-indigo-900 max-md:flex-wrap max-md:pl-5 max-md:max-w-full">
+    <nav class="flex gap-5 justify-between whitespace-nowrap text-zinc-100">
+      <div class="flex gap-3 px-2.5 py-3 bg-indigo-900 rounded-3xl">
+        <img src="{{ url_for('static', filename='images/home.svg') }}" alt="Home icon" class="shrink-0 w-8 aspect-square fill-stone-200" />
+        <div class="my-auto"><a href="{{url_for('home')}}">HOME</a></div>
+      </div>
+      <div class="flex gap-2 py-3 bg-indigo-900 rounded-3xl">
+        <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Audit icon" class="shrink-0 w-8 aspect-square" />
+        <select id="nav"class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-white text-opacity-100 bg-indigo-900 " onchange="navigateToPage()">
+            <option value="">AUDIT</option>
+            <option value="{{url_for('audit')}}">WEIGHOUT</option>
+            <option value="{{url_for('audit_weighin')}}">WEIGHIN</option>
+            <option value="{{url_for('trends')}}">TRENDS</option>
+        </select>
+      </div>
+    </nav>
+    <h1 class="flex-auto my-auto text-4xl leading-5 text-white">VALCO SCALE WEB APP</h1>
+    <div class="flex gap-5 justify-between text-neutral-100">
+      <img src="{{ url_for('static', filename='images/clipboard.svg') }}" alt="Company logo" class="shrink-0 w-8 aspect-square" />
+      <div class="flex-auto my-auto"><a href="{{url_for('log')}}">LOG</a></div>
+      <button class="justify-center self-center px-5 py-4 bg-black rounded-3xl"><a href="{{url_for('signout')}}">SIGN OUT</a></button>
+    </div>
+  </header>
+  <section class="flex gap-5 px-5 mt-32 text-4xl font-medium leading-5 text-black max-md:flex-wrap max-md:mt-10">
+    
+    <h2 class="flex-auto my-auto max-md:max-w-full">LATEST SCALE INFORMATION</h2>
+  </section>
+  <section class="flex flex-col px-12 py-11 mt-5 w-full bg-indigo-900 shadow-sm max-w-[1188px] rounded-[35px] max-md:px-5 max-md:max-w-full">
+    <div class="px-px max-md:max-w-full">
+      <div class="flex gap-5 max-md:flex-col max-md:gap-0">
+        <div class="flex flex-col w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-6 py-5 mx-auto w-full text-4xl leading-5 text-black whitespace-nowrap bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/calendar.svg') }}" alt="Calendar icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="my-auto">DATE</div>
+            </div>
+            <div id="Date"class="self-center mt-5 font-light">{{data['DATES']}}</div>
+          </div>
+        </div>
+        <div class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-6 py-5 mx-auto w-full text-4xl leading-5 text-black bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/clock.svg') }}" alt="Clock icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="my-auto">TIME</div>
+            </div>
+            <div id="Time" class="self-center mt-5 font-light">{{data['TIMES']}}</div>
+          </div>
+        </div>
+        <div class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-6 py-4 mx-auto w-full text-4xl leading-5 text-black whitespace-nowrap bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Truck icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="flex-auto my-auto">TRUCK</div>
+            </div>
+            <div id="ID" class="self-center mt-6 font-light text-center">{{data['EQUIPID']}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-px mt-28 max-md:mt-10 max-md:max-w-full">
+      <div class="flex gap-5 max-md:flex-col max-md:gap-0">
+        <div class="flex flex-col w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-6 py-4 mx-auto w-full text-4xl leading-5 text-black whitespace-nowrap bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/weigh.svg') }}" alt="Weight in icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="my-auto">W-IN</div>
+            </div>
+            <div id="Gross" class="self-center mt-6 font-light text-center">{{data['GROSS']}}</div>
+          </div>
+        </div>
+        <div class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-7 py-5 mx-auto w-full text-4xl text-center text-black whitespace-nowrap bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 leading-[56%] rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/weigh.svg') }}" alt="Weight out icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="flex-auto my-auto">W-OUT</div>
+            </div>
+            <div id="Net" class="self-center mt-6 font-light">{{data['NET']}}</div>
+          </div>
+        </div>
+        <div class="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
+          <div class="flex flex-col grow px-6 py-5 mx-auto w-full text-4xl text-center text-black whitespace-nowrap bg-white rounded-[30px] max-md:px-5 max-md:mt-10">
+            <div class="flex gap-5 px-7 py-2 bg-zinc-300 rounded-[30px] max-md:px-5">
+              <img src="{{ url_for('static', filename='images/weigh.svg') }}" alt="Tare icon" class="shrink-0 aspect-square w-[47px]" />
+              <div class="my-auto">TARE</div>
+            </div>
+            <div id="Tare" class="self-center mt-6 font-light">{{data['TARE']}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="flex gap-5 mt-5 max-w-full text-4xl leading-5 text-center text-black w-[905px] max-md:flex-wrap">
+    {% if Connection %}
+    <div class="flex flex-auto gap-2.5 px-5">
+      <p class="flex-auto">SCALE CONNECTION:</p>
+      <div id="scale" class="shrink-0 self-start h-7 connected-500 rounded-full w-[25px]" aria-label="Scale connection status: Connected"></div>
+    </div>
+    <div class="flex flex-auto gap-2 px-5 max-md:flex-wrap">
+      <p class="flex-auto">PRINTER CONNECTION:</p>
+      <div id="printer" class="shrink-0 self-start h-7 connected-500 rounded-full w-[25px]" aria-label="Printer connection status: Connected"></div>
+    </div>
+    {% else %}
+    <div class="flex flex-auto gap-2.5 px-5">
+      <p class="flex-auto">SCALE CONNECTION:</p>
+      <div id="scale" class="shrink-0 self-start h-7 disconnected-500 rounded-full w-[25px]" aria-label="Scale connection status: Connected"></div>
+    </div>
+    <div class="flex flex-auto gap-2 px-5 max-md:flex-wrap">
+      <p class="flex-auto">PRINTER CONNECTION:</p>
+      <div id="printer" class="shrink-0 self-start h-7 disconnected-500 rounded-full w-[25px]" aria-label="Printer connection status: Connected"></div>
+    </div>
+
+    {% endif %}
+  </section>
+</div>
+
+  <script>
+    function navigateToPage() {
+    var select = document.getElementById('nav');
+    console.log(select)
+    var url = select.value;
+    if (url) {
+        window.location.href=url;
+    }
+  }
+  </script>
+   
+  <script>
+    //Creating a javascript function to handle real time updates without reloading the whole page
+    async function LatestData(){
+      try{
+        //Fetch json to access flask backend.
+        const response= await fetch('/update');
+        const updatedData=await response.json();
+
+        //Output contains both boolean and dictionary
+        const SQLD=updatedData.SQLD;
+        const Conn=updatedData.ConnD;
+
+        document.getElementById('Date').textContent=SQLD['DATES'];
+        document.getElementById('Time').textContent=SQLD['TIMES'];
+        document.getElementById('ID').textContent=SQLD['EQUIPID'];
+        document.getElementById('Gross').textContent=SQLD['GROSS'];
+        document.getElementById('Net').textContent=SQLD['NET'];
+        document.getElementById('Tare').textContent=SQLD['TARE'];
+
+        // Update connection status class for scaleConnection
+        const scaleConnectionDiv = document.getElementById('scale');
+        scaleConnectionDiv.classList.toggle('connected', Conn);
+        scaleConnectionDiv.classList.toggle('disconnected', !Conn);
+
+        // Update connection status class for printerConnection
+        const printerConnectionDiv = document.getElementById('printer');
+        printerConnectionDiv.classList.toggle('connected', Conn);
+        printerConnectionDiv.classList.toggle('disconnected', !Conn);
+           
+      }catch(error){
+        console.error('Problem occurred with fetching and displaying latest data:',error);
+      }
+
+    }
+    //Initialize function
+    LatestData();
+    //Set to run every 5 seconds
+    setInterval(LatestData, 5000);
+
+  </script>
+</body>

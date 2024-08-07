@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haul Road Truck Scale - Login Screen</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='output.css')}}">
+</head>
+
+<body>
+  <nav>
+    <div class="flex justify-between items-left bg-[#1C198E] h-62px">
+      <div>
+        <img src="{{url_for('static', filename='images/valco_logo.svg')}}" alt="Valco Logo" class="h-40px ml-20px">
+      </div>
+  </nav>
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="flex flex-col items-center">
+      <img src="{{url_for('static', filename='images/truck.svg')}}" alt="Truck" class="w-full max-w-[475px] mb-6" />
+      <section class="flex flex-col pb-2 bg-white max-w-[475px] w-full">
+        <h1 class="w-full text-3xl font-medium leading-5 text-center text-black py-3">Login</h1>
+        <div>
+        <form action="{{url_for('index')}}" method="POST">
+          <div class="flex flex-col justify-center px-3 mt-3 w-full whitespace-nowrap">
+            <label for="username" class="text-2xl font-medium leading-5 text-black py-1">Username</label>
+            <input type="text" id="username"
+              name="username" class="justify-center px-3 py-3 mt-1 text-base rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis"
+              placeholder="Enter your username" />
+          </div>
+          <div class="flex flex-col justify-center px-3 mt-3 w-full whitespace-nowrap">
+            <label for="password" class="text-2xl font-medium leading-5 text-black py-1">Password</label>
+            <input type="password" id="password"
+              name="password" class="justify-center px-3 py-3 mt-1 text-base rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis"
+              placeholder="Enter your password" />
+          </div>
+          <div class="flex gap-2 px-3 mt-3 w-full text-xl font-medium leading-6">
+            <button type="submit"
+              class="flex-1 justify-center items-center px-3 py-4 text-black whitespace-nowrap bg-white rounded-lg border border-black border-solid">
+              Login
+            </button>
+          </div>
+        </form>
+        <div class="flex gap-2 px-3 mt-3 w-full text-xl font-medium leading-6">
+        <button class="flex-1 justify-center items-center px-3 py-4 text-white bg-black rounded-lg">
+            <a href="{{url_for('signup')}}">Sign Up</a>
+          </button>
+        </div>
+        </div>
+        <h2 class="self-center mt-7 text-3xl font-medium leading-6 text-center text-black">Welcome Back!</h2>
+        <p class="py-4 self-center text-xl font-semibold leading-4 text-center text-black text-opacity-50">
+          Login to your account
+        </p>
+        <p class="py-4 self-center text-xl font-medium leading-4 text-center text-black text-opacity"><a href="{{url_for('reset')}}">Change your password</a></p>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>

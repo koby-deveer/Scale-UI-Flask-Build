@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haul Road Truck Scale-Sign up Screen</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='output.css')}}">
+</head>
+<body>
+  <div>
+  <section class="flex flex-col items-center pb-20 bg-white">
+  <header class="flex gap-5 justify-between self-stretch pr-10 w-full text-xl leading-5 text-center whitespace-nowrap bg-indigo-900 text-neutral-100 max-md:flex-wrap max-md:pr-5 max-md:max-w-full">
+    <img src="{{url_for('static', filename='images/valco_logo.svg')}}" alt="VALCO logo" class="shrink-0 w-32 max-w-full aspect-[2.08]">
+    <nav class="justify-center px-7 py-3 my-auto rounded-3xl bg-neutral-900 max-md:px-5">
+      <a href="{{ url_for('index') }}">LOGIN</a>
+    </nav>
+  </header>
+  <img src="{{url_for('static', filename='images/truck.svg')}}">
+  <section class="flex flex-col justify-center pt-7 pb-3 max-w-full bg-white w-[516px]">
+    <header class="flex justify-center items-center px-16 py-1.5 font-medium text-center max-md:px-5 max-md:max-w-full">
+      <div class="flex flex-col">
+        <h1 class="text-3xl leading-6 text-black">Forgot Password?</h1>
+        <p class="text-xl leading-4 text-black text-opacity-50 py-3">Reset your Password</p>
+      </div>
+    </header>
+    <form class="flex flex-col justify-center px-3 mt-3 whitespace-nowrap max-md:max-w-full" method="POST" action="{{url_for('reset')}}">
+      <label for="username" class="text-2xl font-medium leading-5 text-black max-md:max-w-full">Username</label>
+      <input type="text"  name="username" placeholder="Enter your username" class="justify-center px-3 py-3 mt-1 text-xl leading-5 rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis max-md:max-w-full">
+      <br>
+      <label for="email" class="text-2xl font-medium leading-5 text-black max-md:max-w-full">Email</label>
+      <input type="text"  name="email" placeholder="Enter your email" class="justify-center px-3 py-3 mt-1 text-xl leading-5 rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis max-md:max-w-full">
+
+      <div class="flex gap-2 px-3 pb-2 mt-3 text-xl font-medium leading-6 max-md:flex-wrap max-md:max-w-full">
+        <button type="submit" class="flex-1 justify-center items-center px-3 py-2.5 text-white bg-black rounded-lg max-md:px-5">
+          Reset Password
+        </button>
+      </div>
+      <div class="msg">{{msg}}</div>
+    </form>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haul Road Truck Scale - Home Screen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
+</head>
+
+<body>
+    <div class="flex flex-col items-center pb-20 bg-white">
+        <header class="flex gap-5 self-stretch px-5 py-3.5 w-full text-2xl font-medium leading-5 text-center bg-indigo-900 max-md:flex-wrap max-md:pl-5 max-md:max-w-full">
+            <nav class="flex gap-5 justify-between whitespace-nowrap text-zinc-100">
+              <div class="flex gap-3 px-2.5 py-3 bg-indigo-900 rounded-3xl">
+                <img src="{{ url_for('static', filename='images/home.svg') }}" alt="Home icon" class="shrink-0 w-8 aspect-square fill-stone-200" />
+                <div class="my-auto"><a href="{{url_for('home')}}">HOME</a></div>
+              </div>
+              <div class="flex gap-2 py-3 bg-indigo-900 rounded-3xl">
+                <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Audit icon" class="shrink-0 w-8 aspect-square" />
+                <select id="nav"class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-white text-opacity-100 bg-indigo-900 " onchange="navigateToPage()">
+                    <option value="">AUDIT</option>
+                    <option value="{{url_for('audit')}}">WEIGHOUT</option>
+                    <option value="{{url_for('audit_weighin')}}">WEIGHIN</option>
+                    <option value="{{url_for('trends')}}">TRENDS</option>
+                </select>
+              </div>
+            </nav>
+            <h1 class="flex-auto my-auto text-4xl leading-5 text-white">VALCO SCALE WEB APP</h1>
+            <div class="flex gap-5 justify-between text-neutral-100">
+              <img src="{{ url_for('static', filename='images/clipboard.svg') }}" alt="Company logo" class="shrink-0 w-8 aspect-square" />
+              <div class="flex-auto my-auto"><a href="{{url_for('log')}}">LOG</a></div>
+              <button class="justify-center self-center px-5 py-4 bg-black rounded-3xl"><a href="{{url_for('signout')}}">SIGN OUT</a></button>
+            </div>
+          </header>
+
+        <div class="flex flex-col items-center pb-20 bg-white">
+            <form class="flex flex-col gap-8 mt-14 w-full max-w-[1440px] px-5 max-md:flex-wrap max-md:mt-10 max-md:max-w-full" action="{{url_for('audit')}}" method="POST">
+                <div class="flex flex-wrap gap-10 w-full">
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="truckId" class="text-3xl leading-6 text-black">Truck ID</label>
+                        <input type="text" name="truckId" placeholder="Please input the Truck ID"
+                            class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50" />
+                    </div>
+
+                    <!-- Create drop down box -->
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="material" class="text-3xl leading-6 text-black">Select Material</label>
+                        <select name="material" class="px-3 py-2 text-2xl leading-4 text-center rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50">
+                            <option value="">Select Material</option>
+                            <option value="Alumina">ALUMINA</option>
+                            <option value="PetCoke">PETCOKE</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="startDate" class="text-3xl leading-6 text-black">Start Date</label>
+                        <input type="date" name="startDate" placeholder="2021-09-03"
+                            class="px-3 py-2 text-2xl leading-5 text-center whitespace-nowrap rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis" />
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-auto">
+                        <label for="endDate" class="text-3xl leading-6 text-black">End Date</label>
+                        <input type="date" name="endDate" placeholder="2021-06-04"
+                            class="px-3 py-2 text-2xl leading-5 text-center whitespace-nowrap rounded-md border border-solid border-black border-opacity-10 text-black text-opacity-50 text-ellipsis" />
+                    </div>
+                </div>
+
+                <div class="flex justify-center my-auto">
+                    <button type="submit" class="flex gap-2 justify-center px-3 py-2.5 bg-black rounded-lg max-md:px-5">
+                        <img src="{{ url_for('static', filename='images/search.svg') }}" alt="Search icon" class="shrink-0 w-8 aspect-square" />
+                        <span class="my-auto text-white">Search</span>
+                    </button>
+                </div>
+            </form>
+
+            
+            <table class="table-auto w-full max-w-[1175px] mt-10 text-xl font-medium text-neutral-800 max-md:mt-10 max-md:max-w-full">
+                <thead>
+                    <tr class="bg-zinc-50">
+                        <th class="px-6 py-4 text-center border border-black">Date</th>
+                        <th class="px-6 py-4 text-center border border-black">Time</th>
+                        <th class="px-6 py-4 text-center border border-black">Weigh Out</th>
+                        <th class="px-6 py-4 text-center border border-black">Weigh In</th>
+                        <th class="px-6 py-4 text-center border border-black">Material Amount</th>
+                        <th class="px-6 py-4 text-center border border-black">Material Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td class="px-6 py-4 text-center border border-black">
+                            <time datetime="{{ item.date }}">{{ item['DATES'] }}</time>
+                        </td>
+                        <td class="px-6 py-4 text-center border border-black">
+                            <time datetime="{{ item.time }}">{{ item['TIMES'] }}</time>
+                        </td>
+                        <td class="px-6 py-4 text-center border border-black">{{ item['GROSS'] }} kg</td>
+                        <td class="px-6 py-4 text-center border border-black">
+                            <span class="text-xl leading-8">{{ item['TARE'] }}</span> kg
+                        </td>
+                        <td class="px-6 py-4 text-center border border-black">
+                            <span class="text-xl leading-8">{{ item['NET'] }}</span> kg
+                        </td>
+                        <td class="px-6 py-4 text-center border border-black">
+                            <span class="text-xl leading-8">{{ item['MATERIAL'] }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <div class="flex justify-center mt-5">
+                {% if page > 1 %}
+                <a href="{{ url_for('audit', page=page-1, truckId=truckId, startDate=startDate, endDate=endDate, material=material) }}" class="px-3 py-1 bg-gray-300 rounded-l">Previous</a>
+                {% else %}
+                <span class="px-3 py-1 bg-gray-200 rounded-l">Previous</span>
+                {% endif %}
+            
+                {% for p in range(1, total_pages+1) %}
+                {% if p == page %}
+                <span class="px-3 py-1 bg-blue-500 text-white">{{ p }}</span>
+                {% else %}
+                <a href="{{ url_for('audit', page=p, truckId=truckId, startDate=startDate, endDate=endDate, material=material) }}" class="px-3 py-1 bg-gray-300">{{ p }}</a>
+                {% endif %}
+                {% endfor %}
+            
+                {% if data|length == rowPage %}
+                <a href="{{ url_for('audit', page=page+1, truckId=truckId, startDate=startDate, endDate=endDate, material=material) }}" class="px-3 py-1 bg-gray-300 rounded-r">Next</a>
+                {% else %}
+                <span class="px-3 py-1 bg-gray-200 rounded-r">Next</span>
+                {% endif %}
+            </div>
+
+        </div>
+        <!-- Print Button for excel sheet creation and download -->
+        <div>
+            <button class="px-5 py-3 bg-blue-500 text-white rounded">
+                <a href="{{url_for('print_excel', truckId=truckId, startDate=startDate, endDate=endDate,type=searchType, material=material)}}">PRINT DOCUMENT</a>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function navigateToPage() {
+        var select = document.getElementById('nav');
+        console.log(select)
+        var url = select.value;
+        if (url) {
+            window.location.href=url;
+        }
+    }
+    </script>
+</body>
+
+</html>
